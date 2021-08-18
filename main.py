@@ -10,7 +10,7 @@ def welcome() -> None:
     separator()
 
 
-def generate_number() -> int:
+def generate_number() -> (list, int):
     number = [random.randint(1, 9)]
     for i in range(3):
         number.append(random.randint(0, 9))
@@ -19,7 +19,7 @@ def generate_number() -> int:
     return number
 
 
-def make_a_guess() -> int: #!!!!!! ohlídat stejná čísla
+def make_a_guess() -> (list, int): #!!!!!! ohlídat stejná čísla
     while True:
         guess = input('Enter a number: ')
         if not guess.isnumeric():
@@ -49,24 +49,27 @@ def list_to_num(number: (list, int)) -> int:
     return int("".join([str(x) for x in number]))
 
 
-def evaluate_guess(number: int, guess: int) -> int:
-    bulls = 0
-    cows = 0
-    #!!!!!!!
-    return bulls, cows
+def evaluate_guess(number: (list, int), guess: (list, int)) -> dict:
+    score = {"bulls": 0, "cows": 0}
+    for pos, num in enumerate(guess):
+        if num == number[pos]:
+            score["bulls"] += 1
+        elif num in set(number):
+            score["cows"] += 1
+    return score
 
 
-def print_evaluation(bulls: int, cows:int,  guesses:int) -> None:
+def print_evaluation(score: dict,  guesses: int) -> None:
     # !!!!!!!
     print(" ")
 
 
-def goodbye(guess: int) -> None:
-    if guess <= 3:
+def goodbye(guesses: int) -> None:
+    if guesses <= 3:
         message = "amazing"
-    elif guess <= 6:
+    elif guesses <= 6:
         message = "average"
-    elif guess <= 8:
+    elif guesses <= 8:
         message = "not so good"
     else:
         message = "terrible"
@@ -76,15 +79,16 @@ def goodbye(guess: int) -> None:
 def main():
     welcome()
     guesses = 0
+    guess = []
     number = generate_number()
     print(number)
     while number != guess:
         guess = make_a_guess()
         guesses += 1
         print(guess)
-        bulls, cows = evaluate_guess(number, guess)
-        print_evaluation(bulls, cows, guesses)
-    goodbye(guess)
+        score = evaluate_guess(number, guess)
+        print_evaluation(score, guesses)
+    goodbye(guesses)
 
 
 if __name__ == '__main__':
