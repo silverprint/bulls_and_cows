@@ -19,7 +19,7 @@ def generate_number() -> (list, int):
     return number
 
 
-def make_a_guess() -> (list, int): #!!!!!! ohlídat stejná čísla
+def make_a_guess() -> (list, int):
     while True:
         guess = input('Enter a number: ')
         if not guess.isnumeric():
@@ -30,6 +30,9 @@ def make_a_guess() -> (list, int): #!!!!!! ohlídat stejná čísla
             continue
         elif guess[0] == str(0):
             print("Number cannot start with zero")
+            continue
+        elif len(guess) != len(set(guess)):
+            print("Digits must be unique")
             continue
         else:
             guess = num_to_list(int(guess))
@@ -59,9 +62,9 @@ def evaluate_guess(number: (list, int), guess: (list, int)) -> dict:
     return score
 
 
-def print_evaluation(score: dict,  guesses: int) -> None:
-    # !!!!!!!
-    print(" ")
+def print_evaluation(score: dict) -> None:
+    print(f"{score['bulls']} bulls, {score['cows']} cows")
+    separator()
 
 
 def goodbye(guesses: int) -> None:
@@ -73,7 +76,7 @@ def goodbye(guesses: int) -> None:
         message = "not so good"
     else:
         message = "terrible"
-    print(f"That's {message}")
+    print(f"Correct, you've guessed the right number in {guesses} guesses! That's {message}.")
 
 
 def main():
@@ -81,13 +84,12 @@ def main():
     guesses = 0
     guess = []
     number = generate_number()
-    print(number)
     while number != guess:
         guess = make_a_guess()
         guesses += 1
-        print(guess)
         score = evaluate_guess(number, guess)
-        print_evaluation(score, guesses)
+        if score['bulls'] < 4:
+            print_evaluation(score)
     goodbye(guesses)
 
 
